@@ -33,7 +33,9 @@ class MyTestClass(BaseCase):
         self.assert_title('Work - Bray Leino Splash Vietnam ')
 
     # Checking if each case study content is visible
+
     def test_case_study_contents(self):
+        err_lst = []
         self.open("https://blsvnint.brayleinosplash.com/")
         self.maximize_window()
         sleep(3)
@@ -59,16 +61,20 @@ class MyTestClass(BaseCase):
                                          'href')
             print(link_cs)
 
-            self.get_link_status_code(link_cs)
-            assert (link_cs, "200")
+            status = self.get_link_status_code(link_cs)
+            if status == 200:
+                err_lst.append(1)
+            else:
+                err_lst.append(0)
 
             link_to_current_cs = self.get_link_status_code('//ul[@class="case-studies__carousel bls-carousel__slider '
                                                            'no-bls-carousel"]//a[@class="btn btn-secondary"]')
-            assert (link_to_current_cs, "200")
+            
+            assert (link_to_current_cs == 200)
 
             link_to_all_cs = self.get_link_status_code('//div[@class="cmd text-center"]//a[@class="btn btn-text '
                                                        'btn-text--white"]')
-            assert (link_to_all_cs, "200")
+            assert (link_to_all_cs == 200)
 
             # Checking is slider is available if the slider item >1
             is_slider_visible = self.is_element_visible('//div[@class="bls-carousel"]//div['
