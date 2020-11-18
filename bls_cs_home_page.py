@@ -42,6 +42,13 @@ class MyTestClass(BaseCase):
 
         elements = self.find_elements(
             '//div[@class="bls-select"]//select[@class="btn-select--white invisible"]//option')
+        elements = self.find_elements(
+            '//div[@class="case-studies__topic"]//div[@class="bls-select"]//ul[@class="bls-options"]/li')
+        for i in range(len(elements)):
+            if elements[i].get_attribute('class') == 'selected':
+                current_active_item = i
+                self.assert_('selected', current_active_item)
+            break
 
         print("Total elements: ", len(elements))
         print(list(elements))
@@ -66,15 +73,24 @@ class MyTestClass(BaseCase):
                 err_lst.append(1)
             else:
                 err_lst.append(0)
+                print('404 Link:', link_cs)
 
             link_to_current_cs = self.get_link_status_code('//ul[@class="case-studies__carousel bls-carousel__slider '
                                                            'no-bls-carousel"]//a[@class="btn btn-secondary"]')
-            
-            assert (link_to_current_cs == 200)
+
+            if link_to_current_cs == 200:
+                err_lst.append(1)
+            else:
+                err_lst.append(0)
+                print('404 Link:', link_to_current_cs)
 
             link_to_all_cs = self.get_link_status_code('//div[@class="cmd text-center"]//a[@class="btn btn-text '
                                                        'btn-text--white"]')
-            assert (link_to_all_cs == 200)
+            if link_to_all_cs == 200:
+                err_lst.append(1)
+            else:
+                err_lst.append(0)
+                print('404 Link:', link_to_all_cs)
 
             # Checking is slider is available if the slider item >1
             is_slider_visible = self.is_element_visible('//div[@class="bls-carousel"]//div['
@@ -96,5 +112,4 @@ class MyTestClass(BaseCase):
                                '@class="bls-carousel__button bls-carousel__button--next"]')
                     sleep(3)
                     break
-
-            sleep(3)
+        sleep(3)
